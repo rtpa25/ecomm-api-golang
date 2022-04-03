@@ -1,10 +1,15 @@
-[] First initiate a go project with go mod init 
-[] Then create a git repository and push the code
-[] Get postgres up and running
-[] Then make a DB schema for the Ecomm-App
-[] Write migration files using golang migrate
+[x] First initiate a go project with go mod init 
+[x] Then create a git repository and push the code
+[x] Get postgres up and running
+[x] Then make a DB schema for the Ecomm-App
+[x] Write migration files using golang migrate
 [] Then write all the db crud operations as queries
 [] Get Sqlc to generate functions out of those queries
 [] Get gin up and running and make the first dummy route
 [] Get viper to store and load the env variables
+[] Make a couple of routes and test them on postman in a serparete project
+[] Add supertokens to the game 
+[] Once all the basic routes are completed and tested Dockerize the backend
+[] Create a few indexes whereever needed and map in the optimization
+[] Start building the frontend [nextjs, reactQuery, styled components, if needed redux]
 
