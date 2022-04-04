@@ -30,6 +30,53 @@ func (q *Queries) AddSizeToProduct(ctx context.Context, arg AddSizeToProductPara
 	return i, err
 }
 
+const getASingleSizeProductMapRow = `-- name: GetASingleSizeProductMapRow :one
+SELECT id, product_id, size_id FROM size_product_map
+WHERE size_id = $1 AND product_id = $2
+`
+
+type GetASingleSizeProductMapRowParams struct {
+	SizeID    int32 `json:"size_id"`
+	ProductID int32 `json:"product_id"`
+}
+
+func (q *Queries) GetASingleSizeProductMapRow(ctx context.Context, arg GetASingleSizeProductMapRowParams) (SizeProductMap, error) {
+	row := q.db.QueryRowContext(ctx, getASingleSizeProductMapRow, arg.SizeID, arg.ProductID)
+	var i SizeProductMap
+	err := row.Scan(&i.ID, &i.ProductID, &i.SizeID)
+	return i, err
+}
+
+const getAvailableSizesOfAProduct = `-- name: GetAvailableSizesOfAProduct :many
+SELECT name 
+FROM sizes
+JOIN size_product_map ON size_product_map.size_id = sizes.id 
+WHERE product_id = $1
+`
+
+func (q *Queries) GetAvailableSizesOfAProduct(ctx context.Context, productID int32) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, getAvailableSizesOfAProduct, productID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []string{}
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return nil, err
+		}
+		items = append(items, name)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listProductsOfSize = `-- name: ListProductsOfSize :many
 SELECT id, product_id, size_id FROM size_product_map 
 WHERE size_id = $1
@@ -65,4 +112,23 @@ func (q *Queries) ListProductsOfSize(ctx context.Context, arg ListProductsOfSize
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateAvailableSizes = `-- name: UpdateAvailableSizes :one
+UPDATE size_product_map
+SET size_id = $2
+WHERE id = $1
+RETURNING id, product_id, size_id
+`
+
+type UpdateAvailableSizesParams struct {
+	ID     int32 `json:"id"`
+	SizeID int32 `json:"size_id"`
+}
+
+func (q *Queries) UpdateAvailableSizes(ctx context.Context, arg UpdateAvailableSizesParams) (SizeProductMap, error) {
+	row := q.db.QueryRowContext(ctx, updateAvailableSizes, arg.ID, arg.SizeID)
+	var i SizeProductMap
+	err := row.Scan(&i.ID, &i.ProductID, &i.SizeID)
+	return i, err
 }

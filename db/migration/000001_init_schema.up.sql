@@ -50,14 +50,14 @@ CREATE TABLE "orders" (
   "prodcut_id" INT NOT NULL
 );
 
-ALTER TABLE "category_product_map" ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
-ALTER TABLE "category_product_map" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id");
+ALTER TABLE "category_product_map" ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id")  ON DELETE CASCADE;
+ALTER TABLE "category_product_map" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "size_product_map" ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
-ALTER TABLE "size_product_map" ADD FOREIGN KEY ("size_id") REFERENCES "sizes" ("id");
+ALTER TABLE "size_product_map" ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id") ON DELETE CASCADE;
+ALTER TABLE "size_product_map" ADD FOREIGN KEY ("size_id") REFERENCES "sizes" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "orders" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
-ALTER TABLE "orders" ADD FOREIGN KEY ("prodcut_id") REFERENCES "products" ("id");
+ALTER TABLE "orders" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE;
+ALTER TABLE "orders" ADD FOREIGN KEY ("prodcut_id") REFERENCES "products" ("id") ON DELETE CASCADE;
 
 -- CREATE INDEX ON "prodcuts" ("price");
 -- CREATE INDEX ON "users" ("is_admin");

@@ -32,3 +32,30 @@ func (q *Queries) DeleteSize(ctx context.Context, id int32) error {
 	_, err := q.db.ExecContext(ctx, deleteSize, id)
 	return err
 }
+
+const listAllSizes = `-- name: ListAllSizes :many
+SELECT id, name FROM sizes
+`
+
+func (q *Queries) ListAllSizes(ctx context.Context) ([]Size, error) {
+	rows, err := q.db.QueryContext(ctx, listAllSizes)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Size{}
+	for rows.Next() {
+		var i Size
+		if err := rows.Scan(&i.ID, &i.Name); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

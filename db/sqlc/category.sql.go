@@ -32,3 +32,30 @@ func (q *Queries) DeleteCategory(ctx context.Context, id int32) error {
 	_, err := q.db.ExecContext(ctx, deleteCategory, id)
 	return err
 }
+
+const listAllCategory = `-- name: ListAllCategory :many
+SELECT id, name FROM categories
+`
+
+func (q *Queries) ListAllCategory(ctx context.Context) ([]Category, error) {
+	rows, err := q.db.QueryContext(ctx, listAllCategory)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Category{}
+	for rows.Next() {
+		var i Category
+		if err := rows.Scan(&i.ID, &i.Name); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

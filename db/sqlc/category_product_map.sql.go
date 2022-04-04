@@ -30,6 +30,53 @@ func (q *Queries) AddCategoryToProduct(ctx context.Context, arg AddCategoryToPro
 	return i, err
 }
 
+const getASingleCategoryProductMapRow = `-- name: GetASingleCategoryProductMapRow :one
+SELECT id, product_id, category_id FROM category_product_map
+WHERE category_id = $1 AND product_id = $2
+`
+
+type GetASingleCategoryProductMapRowParams struct {
+	CategoryID int32 `json:"category_id"`
+	ProductID  int32 `json:"product_id"`
+}
+
+func (q *Queries) GetASingleCategoryProductMapRow(ctx context.Context, arg GetASingleCategoryProductMapRowParams) (CategoryProductMap, error) {
+	row := q.db.QueryRowContext(ctx, getASingleCategoryProductMapRow, arg.CategoryID, arg.ProductID)
+	var i CategoryProductMap
+	err := row.Scan(&i.ID, &i.ProductID, &i.CategoryID)
+	return i, err
+}
+
+const getCategoriesOfAProduct = `-- name: GetCategoriesOfAProduct :many
+SELECT name 
+FROM categories
+JOIN category_product_map ON category_product_map.category_id = categories.id 
+WHERE product_id = $1
+`
+
+func (q *Queries) GetCategoriesOfAProduct(ctx context.Context, productID int32) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, getCategoriesOfAProduct, productID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []string{}
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return nil, err
+		}
+		items = append(items, name)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listProductsOfCategory = `-- name: ListProductsOfCategory :many
 SELECT id, product_id, category_id FROM category_product_map 
 WHERE category_id = $1
@@ -65,4 +112,23 @@ func (q *Queries) ListProductsOfCategory(ctx context.Context, arg ListProductsOf
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateCatagoriesOfACertainProduct = `-- name: UpdateCatagoriesOfACertainProduct :one
+UPDATE category_product_map
+SET category_id = $2
+WHERE id = $1
+RETURNING id, product_id, category_id
+`
+
+type UpdateCatagoriesOfACertainProductParams struct {
+	ID         int32 `json:"id"`
+	CategoryID int32 `json:"category_id"`
+}
+
+func (q *Queries) UpdateCatagoriesOfACertainProduct(ctx context.Context, arg UpdateCatagoriesOfACertainProductParams) (CategoryProductMap, error) {
+	row := q.db.QueryRowContext(ctx, updateCatagoriesOfACertainProduct, arg.ID, arg.CategoryID)
+	var i CategoryProductMap
+	err := row.Scan(&i.ID, &i.ProductID, &i.CategoryID)
+	return i, err
 }

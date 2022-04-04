@@ -9,10 +9,13 @@
 [] Get Air.toml in the project for hot module reload
 [x] Get viper to store and load the env variables
 [x] Make a couple of routes and test them on postman in a serparete project
-[] Add supertokens to the game 
+[] Figure out db transactions and complete all of the product related routes
+[] Add supertokens to the game {think of an auth stratergy} complete all user related routes
+[] Add remaining routes for creating orders and stuff
 [] Check out the db transaction and look out for deadlock and race condition problems 
-[] Once all the basic routes are completed and tested Dockerize the backend
 [] Create a few indexes whereever needed and map in the optimization
+[] Once all the basic routes are completed and tested Dockerize the backend
 [] Deploy the backend onto Digital Ocean
 [] Start building the frontend [nextjs, reactQuery, styled components, if needed redux]
 
+ 
