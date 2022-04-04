@@ -3,13 +3,16 @@
 [x] Get postgres up and running
 [x] Then make a DB schema for the Ecomm-App
 [x] Write migration files using golang migrate
-[] Then write all the db crud operations as queries
-[] Get Sqlc to generate functions out of those queries
-[] Get gin up and running and make the first dummy route
-[] Get viper to store and load the env variables
-[] Make a couple of routes and test them on postman in a serparete project
+[x] Then write all the db crud operations as queries
+[x] Get Sqlc to generate functions out of those queries
+[x] Get gin up and running and make the first dummy route
+[] Get Air.toml in the project for hot module reload
+[x] Get viper to store and load the env variables
+[x] Make a couple of routes and test them on postman in a serparete project
 [] Add supertokens to the game 
+[] Check out the db transaction and look out for deadlock and race condition problems 
 [] Once all the basic routes are completed and tested Dockerize the backend
 [] Create a few indexes whereever needed and map in the optimization
+[] Deploy the backend onto Digital Ocean
 [] Start building the frontend [nextjs, reactQuery, styled components, if needed redux]
 

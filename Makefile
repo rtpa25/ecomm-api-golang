@@ -18,3 +18,6 @@ pullSQLC:
 
 startupSQLC:
 	docker run --rm -v $(pwd):/src -w /src kjconroy/sqlc generate
+
+server:
+	go run main.go

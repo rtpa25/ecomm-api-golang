@@ -10,13 +10,23 @@ import (
 
 type Querier interface {
 	AddCategory(ctx context.Context, name string) (Category, error)
+	AddCategoryToProduct(ctx context.Context, arg AddCategoryToProductParams) (CategoryProductMap, error)
+	AddOrder(ctx context.Context, arg AddOrderParams) (Order, error)
 	AddProduct(ctx context.Context, arg AddProductParams) (Product, error)
 	AddSize(ctx context.Context, name string) (Size, error)
+	AddSizeToProduct(ctx context.Context, arg AddSizeToProductParams) (SizeProductMap, error)
 	DeleteCategory(ctx context.Context, id int32) error
+	DeleteOrder(ctx context.Context, id int32) error
 	DeleteProduct(ctx context.Context, id int32) error
 	DeleteSize(ctx context.Context, id int32) error
+	GetACertainOrder(ctx context.Context, id int32) (Order, error)
+	GetOrderForCertainUser(ctx context.Context, userID int32) (Order, error)
 	GetProduct(ctx context.Context, id int32) (Product, error)
+	ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order, error)
 	ListProducts(ctx context.Context, arg ListProductsParams) ([]Product, error)
+	ListProductsOfCategory(ctx context.Context, arg ListProductsOfCategoryParams) ([]CategoryProductMap, error)
+	ListProductsOfSize(ctx context.Context, arg ListProductsOfSizeParams) ([]SizeProductMap, error)
+	UpdateOrder(ctx context.Context, arg UpdateOrderParams) (Order, error)
 	UpdateProduct(ctx context.Context, arg UpdateProductParams) (Product, error)
 }
 
