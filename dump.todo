@@ -6,11 +6,12 @@
 [x] Then write all the db crud operations as queries
 [x] Get Sqlc to generate functions out of those queries
 [x] Get gin up and running and make the first dummy route
-[] Get Air.toml in the project for hot module reload
+[x] Get Air.toml in the project for hot module reload
 [x] Get viper to store and load the env variables
 [x] Make a couple of routes and test them on postman in a serparete project
 [x] Figure out db transactions and complete all of the product related routes
 [] Add supertokens to the game {think of an auth stratergy} complete all user related routes
+[] Add authorization middleware and secure all routes 
 [] Add remaining routes for creating orders and stuff
 [] Check out the db transaction and look out for deadlock and race condition problems 
 [] Create a few indexes whereever needed and map in the optimization
