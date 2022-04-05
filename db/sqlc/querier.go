@@ -15,6 +15,7 @@ type Querier interface {
 	AddProduct(ctx context.Context, arg AddProductParams) (Product, error)
 	AddSize(ctx context.Context, name string) (Size, error)
 	AddSizeToProduct(ctx context.Context, arg AddSizeToProductParams) (SizeProductMap, error)
+	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteCategory(ctx context.Context, id int32) error
 	DeleteOrder(ctx context.Context, id int32) error
 	DeleteProduct(ctx context.Context, id int32) error
@@ -24,8 +25,10 @@ type Querier interface {
 	GetASingleSizeProductMapRow(ctx context.Context, arg GetASingleSizeProductMapRowParams) (SizeProductMap, error)
 	GetAvailableSizesOfAProduct(ctx context.Context, productID int32) ([]string, error)
 	GetCategoriesOfAProduct(ctx context.Context, productID int32) ([]string, error)
+	GetListOfUsers(ctx context.Context, arg GetListOfUsersParams) ([]User, error)
 	GetOrderForCertainUser(ctx context.Context, userID int32) (Order, error)
 	GetProduct(ctx context.Context, id int32) (Product, error)
+	GetUserByEmail(ctx context.Context, email string) (User, error)
 	ListAllCategory(ctx context.Context) ([]Category, error)
 	ListAllSizes(ctx context.Context) ([]Size, error)
 	ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order, error)

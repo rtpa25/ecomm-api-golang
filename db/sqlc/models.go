@@ -8,6 +8,11 @@ import (
 	"time"
 )
 
+type Admin struct {
+	ID     int32 `json:"id"`
+	UserID int32 `json:"user_id"`
+}
+
 type Category struct {
 	ID   int32  `json:"id"`
 	Name string `json:"name"`
@@ -54,6 +59,7 @@ type SizeProductMap struct {
 
 type User struct {
 	ID        int32     `json:"id"`
+	Email     string    `json:"email"`
 	Username  string    `json:"username"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`

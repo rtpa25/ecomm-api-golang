@@ -1,5 +1,6 @@
 CREATE TABLE "users" (
   "id" SERIAL PRIMARY KEY,
+  "email" VARCHAR NOT NULL,
   "username" VARCHAR NOT NULL,
   "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
   "updated_at" TIMESTAMP NOT NULL DEFAULT (now()),
@@ -50,6 +51,11 @@ CREATE TABLE "orders" (
   "prodcut_id" INT NOT NULL
 );
 
+CREATE TABLE "admins" (
+  "id" SERIAL PRIMARY KEY,
+  "user_id" INT NOT NULL
+);
+
 ALTER TABLE "category_product_map" ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id")  ON DELETE CASCADE;
 ALTER TABLE "category_product_map" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE CASCADE;
 
@@ -58,6 +64,8 @@ ALTER TABLE "size_product_map" ADD FOREIGN KEY ("size_id") REFERENCES "sizes" ("
 
 ALTER TABLE "orders" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE;
 ALTER TABLE "orders" ADD FOREIGN KEY ("prodcut_id") REFERENCES "products" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "admins" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE;
 
 -- CREATE INDEX ON "prodcuts" ("price");
 -- CREATE INDEX ON "users" ("is_admin");

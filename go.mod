@@ -5,7 +5,18 @@ go 1.17
 require github.com/spf13/viper v1.10.1
 
 require (
+	github.com/MicahParks/keyfunc v1.0.0 // indirect
+	github.com/derekstavis/go-qs v0.0.0-20180720192143-9eef69e6c4e7 // indirect
+	github.com/golang-jwt/jwt/v4 v4.1.0 // indirect
+	github.com/h2non/parth v0.0.0-20190131123155-b4df798d6542 // indirect
+	github.com/supertokens/supertokens-golang v0.5.4 // indirect
+	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
+	gopkg.in/h2non/gock.v1 v1.1.2 // indirect
+)
+
+require (
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
+	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.7.7
 	github.com/go-playground/locales v0.14.0 // indirect
