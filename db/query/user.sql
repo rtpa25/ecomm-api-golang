@@ -1,9 +1,10 @@
 -- name: CreateUser :one
 INSERT INTO users (
+  email,
   username,
   is_admin
 ) VALUES (
-  $1, $2
+  $1, $2, $3
 ) RETURNING *;
 
 -- name: GetListOfUsers :many

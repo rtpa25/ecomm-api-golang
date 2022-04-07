@@ -149,24 +149,17 @@ type listProductReponseParams struct {
 }
 
 func (server *Server) listProducts(ctx *gin.Context) {
-	var req listProductParams
 	var res listProductReponseParams
 
-	err := ctx.ShouldBindJSON(&req)
-
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
-	intLimit, err := strconv.Atoi(req.Limit)
+	val := ctx.Request.URL.Query()
+	intLimit, err := strconv.Atoi(val["limit"][0])
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	intOffset, err := strconv.Atoi(req.Offset)
+	intOffset, err := strconv.Atoi(val["offset"][0])
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))

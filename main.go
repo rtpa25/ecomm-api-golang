@@ -35,7 +35,7 @@ func main() {
 			ConnectionURI: "https://try.supertokens.io",
 		},
 		AppInfo: supertokens.AppInfo{
-			AppName:       "SuperTokens Demo App",
+			AppName:       "ecomm",
 			APIDomain:     config.ServerAddress,
 			WebsiteDomain: config.WebsiteAddress,
 		},
@@ -45,7 +45,7 @@ func main() {
 				SignUpFeature: &epmodels.TypeInputSignUp{
 					FormFields: []epmodels.TypeInputFormField{
 						{
-							ID: "username",
+							ID: "username", //this is the one causing the bug
 						},
 					},
 				},
@@ -59,12 +59,21 @@ func main() {
 									username = formField.Value
 								}
 							}
-							//insert the user into the personal db
-							res, err := originalSignupPost(formFields, options, userContext)
-							store.CreateUser(context.Background(), db.CreateUserParams{
+
+							res, err := originalSignupPost(formFields, options, userContext) //this panics
+							if err != nil {
+								log.Fatal(err.Error())
+							}
+
+							_, err = store.CreateUser(context.Background(), db.CreateUserParams{
+								Email:    res.OK.User.Email,
 								Username: username,
 								IsAdmin:  false,
 							})
+
+							if err != nil {
+								log.Fatal(err.Error())
+							}
 							return res, err
 						}
 						return originalImplementation
@@ -81,7 +90,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Could not loadup server", err)
 	}
-
 	err = server.Start(config.ServerAddress)
 
 	if err != nil {

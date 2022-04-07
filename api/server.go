@@ -49,17 +49,17 @@ func (server *Server) setupRouter() {
 	router.GET("/hi", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, "Hi there")
 	})
-	router.POST("/addProduct", server.addProduct)              //route to add products
-	router.DELETE("/deleteProduct", server.deleteProduct)      //route to delete product
-	router.PATCH("/updateProduct", server.updateProduct)       //route to update product
-	router.POST("/addCategory", server.addCategory)            //route to add a category
-	router.DELETE("/deleteCategory", server.deleteCategory)    //route to delete a category
-	router.GET("/listAllCategories", server.listAllCategories) //route to list all categories
-	router.POST("/addSize", server.addSize)                    //route to add a size
-	router.DELETE("/deleteSize", server.deleteSize)            //route to delete a size
-	router.GET("/listAllSizes", server.listAllSizes)           //route to list all size
-	router.GET("/listProducts", server.listProducts)           //route to fetch all products in a paginated fashion
-	router.GET("/getProduct", server.getProduct)               //route to get a single product details by id
+	router.POST("/addProduct", server.verifySession(nil), server.checkAuthority(), server.addProduct) //route to add products
+	router.DELETE("/deleteProduct", server.deleteProduct)                                             //route to delete product
+	router.PATCH("/updateProduct", server.updateProduct)                                              //route to update product
+	router.POST("/addCategory", server.addCategory)                                                   //route to add a category
+	router.DELETE("/deleteCategory", server.deleteCategory)                                           //route to delete a category
+	router.GET("/listAllCategories", server.listAllCategories)                                        //route to list all categories
+	router.POST("/addSize", server.addSize)                                                           //route to add a size
+	router.DELETE("/deleteSize", server.deleteSize)                                                   //route to delete a size
+	router.GET("/listAllSizes", server.listAllSizes)                                                  //route to list all size
+	router.GET("/listProducts", server.listProducts)                                                  //route to fetch all products in a paginated fashion
+	router.GET("/getProduct", server.getProduct)                                                      //route to get a single product details by id
 	server.router = router
 }
 

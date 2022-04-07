@@ -79,6 +79,7 @@ func (store *SQLStore) AddProductTx(ctx context.Context, arg AddProductRequestPa
 			ImageID:     arg.ImageID,
 			Price:       arg.Price,
 		})
+
 		result.ID = product.ID
 		result.Name = product.Name
 		result.Description = product.Description
@@ -89,7 +90,7 @@ func (store *SQLStore) AddProductTx(ctx context.Context, arg AddProductRequestPa
 		//added to catagory_product_map
 		for _, CategoryID := range arg.CategoryIDs {
 			var intCategoryId int
-			intCategoryId, err = strconv.Atoi(CategoryID)
+			intCategoryId, _ = strconv.Atoi(CategoryID)
 			_, err = q.AddCategoryToProduct(ctx, AddCategoryToProductParams{
 				ProductID:  product.ID,
 				CategoryID: int32(intCategoryId),
@@ -99,7 +100,7 @@ func (store *SQLStore) AddProductTx(ctx context.Context, arg AddProductRequestPa
 		//added to size_product_map
 		for _, SizeID := range arg.SizeIDs {
 			var intSizeId int
-			intSizeId, err = strconv.Atoi(SizeID)
+			intSizeId, _ = strconv.Atoi(SizeID)
 			_, err = q.AddSizeToProduct(ctx, AddSizeToProductParams{
 				ProductID: product.ID,
 				SizeID:    int32(intSizeId),
@@ -112,6 +113,8 @@ func (store *SQLStore) AddProductTx(ctx context.Context, arg AddProductRequestPa
 
 		result.AvailableSizes = availableSizes
 		result.Categories = categories
+		fmt.Println(3)
+
 		return err
 	})
 	return result, err

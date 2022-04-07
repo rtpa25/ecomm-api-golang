@@ -2,15 +2,16 @@ package api
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/supertokens/supertokens-golang/recipe/emailpassword"
 	"github.com/supertokens/supertokens-golang/recipe/session"
 )
 
-func checkAuthority(server Server) gin.HandlerFunc {
+func (server *Server) checkAuthority() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		sess := session.GetSessionFromRequestContext(ctx)
+		sess := session.GetSessionFromRequestContext(ctx.Request.Context())
 		user, err := emailpassword.GetUserByID(sess.GetUserID())
 		if err != nil {
 			log.Fatal(err.Error())
@@ -21,7 +22,8 @@ func checkAuthority(server Server) gin.HandlerFunc {
 			log.Fatal(err.Error())
 			ctx.Abort()
 		}
-		if userFromSelfDB.IsAdmin == false {
+		if !userFromSelfDB.IsAdmin {
+			ctx.JSON(http.StatusUnauthorized, "unauthorized")
 			ctx.Abort()
 		}
 		ctx.Next()
