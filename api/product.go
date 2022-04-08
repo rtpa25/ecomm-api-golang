@@ -273,20 +273,17 @@ type getProductReposneParams struct {
 }
 
 func (server *Server) getProduct(ctx *gin.Context) {
-	var req getProductParams
+	id := ctx.Request.URL.Query().Get("id")
 
-	err := ctx.ShouldBindJSON(&req)
+	var intId int
+	var err error
 
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
-	intId, err := strconv.Atoi(req.Id)
-
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
+	if id != "" {
+		intId, err = strconv.Atoi(id)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
 	}
 
 	product, err := server.store.GetProduct(ctx, int32(intId))

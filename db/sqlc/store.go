@@ -113,7 +113,6 @@ func (store *SQLStore) AddProductTx(ctx context.Context, arg AddProductRequestPa
 
 		result.AvailableSizes = availableSizes
 		result.Categories = categories
-		fmt.Println(3)
 
 		return err
 	})
