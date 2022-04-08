@@ -2,8 +2,9 @@ package api
 
 import (
 	"database/sql"
-	"fmt"
+	"encoding/json"
 	"net/http"
+	"sort"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -74,7 +75,6 @@ func (server *Server) deleteProduct(ctx *gin.Context) {
 	err = server.store.DeleteProduct(ctx, int32(intId))
 
 	if err != nil {
-		fmt.Println("THIS IS COMING HERE")
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
 			return
@@ -139,16 +139,14 @@ func (server *Server) updateProduct(ctx *gin.Context) {
 }
 
 // ------------------ handler to list all products with pagination ---------------------- //
-type listProductParams struct {
-	Limit  string `json:"limit"`  //the number of results you want
-	Offset string `json:"offset"` //the number of entries you want to ommit before the result set
-}
-
 type listProductReponseParams struct {
 	Reuslt []getProductReposneParams `json:"result"`
 }
 
 func (server *Server) listProducts(ctx *gin.Context) {
+	// http://localhost:8080/listProducts?limit=8&offset=0&filters={"size":"M","catagories":"Modern"}&sort=newest
+	//first let's do sort
+
 	var res listProductReponseParams
 
 	val := ctx.Request.URL.Query()
@@ -166,6 +164,13 @@ func (server *Server) listProducts(ctx *gin.Context) {
 		return
 	}
 
+	sortCriteria := val.Get("sort")
+
+	filterCriteria := val.Get("filters")
+
+	var filters map[string]string
+	json.Unmarshal([]byte(filterCriteria), &filters)
+
 	arg := db.ListProductsParams{
 		Limit:  int32(intLimit),
 		Offset: int32(intOffset),
@@ -182,6 +187,25 @@ func (server *Server) listProducts(ctx *gin.Context) {
 		return
 	}
 
+	switch sortCriteria {
+	case "Price (desc)":
+		sort.Slice(products, func(i, j int) bool {
+			intPricei, _ := strconv.Atoi(products[i].Price)
+			intPricej, _ := strconv.Atoi(products[j].Price)
+			return intPricei > intPricej
+		})
+	case "Price (asc)":
+		sort.Slice(products, func(i, j int) bool {
+			intPricei, _ := strconv.Atoi(products[i].Price)
+			intPricej, _ := strconv.Atoi(products[j].Price)
+			return intPricei < intPricej
+		})
+	case "Newest":
+		sort.Slice(products, func(i, j int) bool {
+			return products[i].CreatedAt.After(products[j].CreatedAt)
+		})
+	}
+
 	for _, product := range products {
 		sizes, err := server.store.GetAvailableSizesOfAProduct(ctx, product.ID)
 		if err != nil {
@@ -189,10 +213,40 @@ func (server *Server) listProducts(ctx *gin.Context) {
 			return
 		}
 
+		hasSize := false
+		for _, sizeOfProduct := range sizes {
+			if filters["size"] != "" {
+				if sizeOfProduct == filters["size"] {
+					hasSize = true
+				}
+			}
+		}
+
+		if filters["size"] != "" {
+			if !hasSize {
+				break
+			}
+		}
+
 		catagories, err := server.store.GetCategoriesOfAProduct(ctx, product.ID)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
+		}
+
+		hasCatagory := false
+		for _, catagoryOfProduct := range catagories {
+			if filters["catagories"] != "" {
+				if catagoryOfProduct == filters["catagories"] {
+					hasCatagory = true
+				}
+			}
+		}
+
+		if filters["catagories"] != "" {
+			if !hasCatagory {
+				break
+			}
 		}
 
 		entry := getProductReposneParams{
