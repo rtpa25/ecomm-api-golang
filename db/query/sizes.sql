@@ -1,12 +1,17 @@
 -- name: AddSize :one
-INSERT INTO sizes (
-  name
-) VALUES (
-  $1
-) RETURNING *;
+INSERT INTO
+  sizes (name)
+VALUES
+  ($1) RETURNING *;
 
 -- name: ListAllSizes :many
-SELECT * FROM sizes;
+SELECT
+  *
+FROM
+  sizes;
 
 -- name: DeleteSize :exec
-DELETE FROM sizes WHERE id = $1;
+DELETE FROM
+  sizes
+WHERE
+  id = $1;

@@ -10,12 +10,10 @@ import (
 )
 
 const addSizeToProduct = `-- name: AddSizeToProduct :one
-INSERT INTO size_product_map (
-  product_id,
-  size_id
-) VALUES (
-  $1, $2
-) RETURNING id, product_id, size_id
+INSERT INTO
+  size_product_map (product_id, size_id)
+VALUES
+  ($1, $2) RETURNING id, product_id, size_id
 `
 
 type AddSizeToProductParams struct {
@@ -31,8 +29,13 @@ func (q *Queries) AddSizeToProduct(ctx context.Context, arg AddSizeToProductPara
 }
 
 const getASingleSizeProductMapRow = `-- name: GetASingleSizeProductMapRow :one
-SELECT id, product_id, size_id FROM size_product_map
-WHERE size_id = $1 AND product_id = $2
+SELECT
+  id, product_id, size_id
+FROM
+  size_product_map
+WHERE
+  size_id = $1
+  AND product_id = $2
 `
 
 type GetASingleSizeProductMapRowParams struct {
@@ -48,10 +51,13 @@ func (q *Queries) GetASingleSizeProductMapRow(ctx context.Context, arg GetASingl
 }
 
 const getAvailableSizesOfAProduct = `-- name: GetAvailableSizesOfAProduct :many
-SELECT name 
-FROM sizes
-JOIN size_product_map ON size_product_map.size_id = sizes.id 
-WHERE product_id = $1
+SELECT
+  name
+FROM
+  sizes
+  JOIN size_product_map ON size_product_map.size_id = sizes.id
+WHERE
+  product_id = $1
 `
 
 func (q *Queries) GetAvailableSizesOfAProduct(ctx context.Context, productID int32) ([]string, error) {
@@ -78,11 +84,16 @@ func (q *Queries) GetAvailableSizesOfAProduct(ctx context.Context, productID int
 }
 
 const listProductsOfSize = `-- name: ListProductsOfSize :many
-SELECT id, product_id, size_id FROM size_product_map 
-WHERE size_id = $1
-ORDER BY id 
-LIMIT $2
-OFFSET $3
+SELECT
+  id, product_id, size_id
+FROM
+  size_product_map
+WHERE
+  size_id = $1
+ORDER BY
+  id
+LIMIT
+  $2 OFFSET $3
 `
 
 type ListProductsOfSizeParams struct {
@@ -115,10 +126,12 @@ func (q *Queries) ListProductsOfSize(ctx context.Context, arg ListProductsOfSize
 }
 
 const updateAvailableSizes = `-- name: UpdateAvailableSizes :one
-UPDATE size_product_map
-SET size_id = $2
-WHERE id = $1
-RETURNING id, product_id, size_id
+UPDATE
+  size_product_map
+SET
+  size_id = $2
+WHERE
+  id = $1 RETURNING id, product_id, size_id
 `
 
 type UpdateAvailableSizesParams struct {

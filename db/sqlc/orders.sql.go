@@ -10,113 +10,96 @@ import (
 )
 
 const addOrder = `-- name: AddOrder :one
-INSERT INTO orders (
-  amount,
-  user_id,
-  status,
-  address,
-  prodcut_id
-) VALUES (
-  $1, $2, $3, $4,$5
-) RETURNING id, amount, user_id, status, created_at, updated_at, address, prodcut_id
+INSERT INTO
+  orders (
+    quantity,
+    user_id,
+    address,
+    prodcut_id,
+    selected_size
+  )
+VALUES
+  ($1, $2, $3, $4, $5) RETURNING id, quantity, user_id, status, created_at, updated_at, address, prodcut_id, selected_size
 `
 
 type AddOrderParams struct {
-	Amount    int32  `json:"amount"`
-	UserID    int32  `json:"user_id"`
-	Status    string `json:"status"`
-	Address   string `json:"address"`
-	ProdcutID int32  `json:"prodcut_id"`
+	Quantity     int32  `json:"quantity"`
+	UserID       int32  `json:"user_id"`
+	Address      string `json:"address"`
+	ProdcutID    int32  `json:"prodcut_id"`
+	SelectedSize string `json:"selected_size"`
 }
 
 func (q *Queries) AddOrder(ctx context.Context, arg AddOrderParams) (Order, error) {
 	row := q.db.QueryRowContext(ctx, addOrder,
-		arg.Amount,
+		arg.Quantity,
 		arg.UserID,
-		arg.Status,
 		arg.Address,
 		arg.ProdcutID,
+		arg.SelectedSize,
 	)
 	var i Order
 	err := row.Scan(
 		&i.ID,
-		&i.Amount,
+		&i.Quantity,
 		&i.UserID,
 		&i.Status,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Address,
 		&i.ProdcutID,
+		&i.SelectedSize,
 	)
 	return i, err
 }
 
-const deleteOrder = `-- name: DeleteOrder :exec
-DELETE FROM orders WHERE id = $1
+const deleteOrderById = `-- name: DeleteOrderById :exec
+DELETE FROM
+  orders
+WHERE
+  id = $1
 `
 
-func (q *Queries) DeleteOrder(ctx context.Context, id int32) error {
-	_, err := q.db.ExecContext(ctx, deleteOrder, id)
+func (q *Queries) DeleteOrderById(ctx context.Context, id int32) error {
+	_, err := q.db.ExecContext(ctx, deleteOrderById, id)
 	return err
 }
 
-const getACertainOrder = `-- name: GetACertainOrder :one
-SELECT id, amount, user_id, status, created_at, updated_at, address, prodcut_id FROM orders
-WHERE id = $1
+const getOrderById = `-- name: GetOrderById :one
+SELECT id, quantity, user_id, status, created_at, updated_at, address, prodcut_id, selected_size FROM orders
+WHERE id=$1
 `
 
-func (q *Queries) GetACertainOrder(ctx context.Context, id int32) (Order, error) {
-	row := q.db.QueryRowContext(ctx, getACertainOrder, id)
+func (q *Queries) GetOrderById(ctx context.Context, id int32) (Order, error) {
+	row := q.db.QueryRowContext(ctx, getOrderById, id)
 	var i Order
 	err := row.Scan(
 		&i.ID,
-		&i.Amount,
+		&i.Quantity,
 		&i.UserID,
 		&i.Status,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Address,
 		&i.ProdcutID,
+		&i.SelectedSize,
 	)
 	return i, err
 }
 
-const getOrderForCertainUser = `-- name: GetOrderForCertainUser :one
-SELECT id, amount, user_id, status, created_at, updated_at, address, prodcut_id FROM orders
-WHERE user_id = $1
-ORDER BY id
+const getOrdersForUser = `-- name: GetOrdersForUser :many
+SELECT
+  id, quantity, user_id, status, created_at, updated_at, address, prodcut_id, selected_size
+FROM
+  orders
+WHERE
+  user_id = $1
+ORDER BY
+  id
 `
 
-func (q *Queries) GetOrderForCertainUser(ctx context.Context, userID int32) (Order, error) {
-	row := q.db.QueryRowContext(ctx, getOrderForCertainUser, userID)
-	var i Order
-	err := row.Scan(
-		&i.ID,
-		&i.Amount,
-		&i.UserID,
-		&i.Status,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.Address,
-		&i.ProdcutID,
-	)
-	return i, err
-}
-
-const listOrders = `-- name: ListOrders :many
-SELECT id, amount, user_id, status, created_at, updated_at, address, prodcut_id FROM orders
-ORDER BY id 
-LIMIT $1
-OFFSET $2
-`
-
-type ListOrdersParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
-}
-
-func (q *Queries) ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order, error) {
-	rows, err := q.db.QueryContext(ctx, listOrders, arg.Limit, arg.Offset)
+func (q *Queries) GetOrdersForUser(ctx context.Context, userID int32) ([]Order, error) {
+	rows, err := q.db.QueryContext(ctx, getOrdersForUser, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -126,13 +109,14 @@ func (q *Queries) ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order
 		var i Order
 		if err := rows.Scan(
 			&i.ID,
-			&i.Amount,
+			&i.Quantity,
 			&i.UserID,
 			&i.Status,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.Address,
 			&i.ProdcutID,
+			&i.SelectedSize,
 		); err != nil {
 			return nil, err
 		}
@@ -147,37 +131,42 @@ func (q *Queries) ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order
 	return items, nil
 }
 
-const updateOrder = `-- name: UpdateOrder :one
-UPDATE orders
-SET amount = $2, status = $3, address = $4
-WHERE id = $1
-RETURNING id, amount, user_id, status, created_at, updated_at, address, prodcut_id
+const updateOrderForUser = `-- name: UpdateOrderForUser :one
+UPDATE
+  orders
+SET
+  quantity = $2,
+  selected_size = $3,
+  address = $4
+WHERE
+  id = $1 RETURNING id, quantity, user_id, status, created_at, updated_at, address, prodcut_id, selected_size
 `
 
-type UpdateOrderParams struct {
-	ID      int32  `json:"id"`
-	Amount  int32  `json:"amount"`
-	Status  string `json:"status"`
-	Address string `json:"address"`
+type UpdateOrderForUserParams struct {
+	ID           int32  `json:"id"`
+	Quantity     int32  `json:"quantity"`
+	SelectedSize string `json:"selected_size"`
+	Address      string `json:"address"`
 }
 
-func (q *Queries) UpdateOrder(ctx context.Context, arg UpdateOrderParams) (Order, error) {
-	row := q.db.QueryRowContext(ctx, updateOrder,
+func (q *Queries) UpdateOrderForUser(ctx context.Context, arg UpdateOrderForUserParams) (Order, error) {
+	row := q.db.QueryRowContext(ctx, updateOrderForUser,
 		arg.ID,
-		arg.Amount,
-		arg.Status,
+		arg.Quantity,
+		arg.SelectedSize,
 		arg.Address,
 	)
 	var i Order
 	err := row.Scan(
 		&i.ID,
-		&i.Amount,
+		&i.Quantity,
 		&i.UserID,
 		&i.Status,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Address,
 		&i.ProdcutID,
+		&i.SelectedSize,
 	)
 	return i, err
 }

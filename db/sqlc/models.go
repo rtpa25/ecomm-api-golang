@@ -25,14 +25,15 @@ type CategoryProductMap struct {
 }
 
 type Order struct {
-	ID        int32     `json:"id"`
-	Amount    int32     `json:"amount"`
-	UserID    int32     `json:"user_id"`
-	Status    string    `json:"status"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Address   string    `json:"address"`
-	ProdcutID int32     `json:"prodcut_id"`
+	ID           int32     `json:"id"`
+	Quantity     int32     `json:"quantity"`
+	UserID       int32     `json:"user_id"`
+	Status       int32     `json:"status"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+	Address      string    `json:"address"`
+	ProdcutID    int32     `json:"prodcut_id"`
+	SelectedSize string    `json:"selected_size"`
 }
 
 type Product struct {

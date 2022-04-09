@@ -17,27 +17,26 @@ type Querier interface {
 	AddSizeToProduct(ctx context.Context, arg AddSizeToProductParams) (SizeProductMap, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteCategory(ctx context.Context, id int32) error
-	DeleteOrder(ctx context.Context, id int32) error
+	DeleteOrderById(ctx context.Context, id int32) error
 	DeleteProduct(ctx context.Context, id int32) error
 	DeleteSize(ctx context.Context, id int32) error
-	GetACertainOrder(ctx context.Context, id int32) (Order, error)
 	GetASingleCategoryProductMapRow(ctx context.Context, arg GetASingleCategoryProductMapRowParams) (CategoryProductMap, error)
 	GetASingleSizeProductMapRow(ctx context.Context, arg GetASingleSizeProductMapRowParams) (SizeProductMap, error)
 	GetAvailableSizesOfAProduct(ctx context.Context, productID int32) ([]string, error)
 	GetCategoriesOfAProduct(ctx context.Context, productID int32) ([]string, error)
 	GetListOfUsers(ctx context.Context, arg GetListOfUsersParams) ([]User, error)
-	GetOrderForCertainUser(ctx context.Context, userID int32) (Order, error)
+	GetOrderById(ctx context.Context, id int32) (Order, error)
+	GetOrdersForUser(ctx context.Context, userID int32) ([]Order, error)
 	GetProduct(ctx context.Context, id int32) (Product, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	ListAllCategory(ctx context.Context) ([]Category, error)
 	ListAllSizes(ctx context.Context) ([]Size, error)
-	ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order, error)
 	ListProducts(ctx context.Context, arg ListProductsParams) ([]Product, error)
 	ListProductsOfCategory(ctx context.Context, arg ListProductsOfCategoryParams) ([]CategoryProductMap, error)
 	ListProductsOfSize(ctx context.Context, arg ListProductsOfSizeParams) ([]SizeProductMap, error)
 	UpdateAvailableSizes(ctx context.Context, arg UpdateAvailableSizesParams) (SizeProductMap, error)
 	UpdateCatagoriesOfACertainProduct(ctx context.Context, arg UpdateCatagoriesOfACertainProductParams) (CategoryProductMap, error)
-	UpdateOrder(ctx context.Context, arg UpdateOrderParams) (Order, error)
+	UpdateOrderForUser(ctx context.Context, arg UpdateOrderForUserParams) (Order, error)
 	UpdateProduct(ctx context.Context, arg UpdateProductParams) (Product, error)
 }
 

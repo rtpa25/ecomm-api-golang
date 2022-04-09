@@ -10,11 +10,10 @@ import (
 )
 
 const addCategory = `-- name: AddCategory :one
-INSERT INTO categories (
-  name
-) VALUES (
-  $1
-) RETURNING id, name
+INSERT INTO
+  categories (name)
+VALUES
+  ($1) RETURNING id, name
 `
 
 func (q *Queries) AddCategory(ctx context.Context, name string) (Category, error) {
@@ -25,7 +24,10 @@ func (q *Queries) AddCategory(ctx context.Context, name string) (Category, error
 }
 
 const deleteCategory = `-- name: DeleteCategory :exec
-DELETE FROM categories WHERE id = $1
+DELETE FROM
+  categories
+WHERE
+  id = $1
 `
 
 func (q *Queries) DeleteCategory(ctx context.Context, id int32) error {
@@ -34,7 +36,10 @@ func (q *Queries) DeleteCategory(ctx context.Context, id int32) error {
 }
 
 const listAllCategory = `-- name: ListAllCategory :many
-SELECT id, name FROM categories
+SELECT
+  id, name
+FROM
+  categories
 `
 
 func (q *Queries) ListAllCategory(ctx context.Context) ([]Category, error) {

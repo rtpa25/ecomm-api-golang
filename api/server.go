@@ -49,17 +49,23 @@ func (server *Server) setupRouter() {
 	router.GET("/hi", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, "Hi there")
 	})
-	router.POST("/addProduct", server.verifySession(nil), server.checkAuthority(), server.addProduct) //route to add products
-	router.DELETE("/deleteProduct", server.deleteProduct)                                             //route to delete product
-	router.PATCH("/updateProduct", server.updateProduct)                                              //route to update product
-	router.POST("/addCategory", server.addCategory)                                                   //route to add a category
-	router.DELETE("/deleteCategory", server.deleteCategory)                                           //route to delete a category
-	router.GET("/listAllCategories", server.listAllCategories)                                        //route to list all categories
-	router.POST("/addSize", server.addSize)                                                           //route to add a size
-	router.DELETE("/deleteSize", server.deleteSize)                                                   //route to delete a size
-	router.GET("/listAllSizes", server.listAllSizes)                                                  //route to list all size
-	router.GET("/listProducts", server.listProducts)                                                  //route to fetch all products in a paginated fashion
-	router.GET("/getProduct", server.getProduct)                                                      //route to get a single product details by id
+	router.POST("/addProduct", server.verifySession(nil), server.checkAuthority(), server.addProduct)              //route to add products
+	router.DELETE("/deleteProduct", server.verifySession(nil), server.checkAuthority(), server.deleteProduct)      //route to delete product
+	router.PATCH("/updateProduct", server.verifySession(nil), server.checkAuthority(), server.updateProduct)       //route to update product
+	router.POST("/addCategory", server.verifySession(nil), server.checkAuthority(), server.addCategory)            //route to add a category
+	router.DELETE("/deleteCategory", server.verifySession(nil), server.checkAuthority(), server.deleteCategory)    //route to delete a category
+	router.GET("/listAllCategories", server.verifySession(nil), server.checkAuthority(), server.listAllCategories) //route to list all categories
+	router.POST("/addSize", server.verifySession(nil), server.checkAuthority(), server.addSize)                    //route to add a size
+	router.DELETE("/deleteSize", server.verifySession(nil), server.checkAuthority(), server.deleteSize)            //route to delete a size
+	router.GET("/listAllSizes", server.verifySession(nil), server.checkAuthority(), server.listAllSizes)           //route to list all size
+	router.GET("/listProducts", server.listProducts)                                                               //route to fetch all products in a paginated fashion
+	router.GET("/getProduct", server.getProduct)                                                                   //route to get a single product details by id
+
+	router.POST("/createOrder", server.verifySession(nil), server.createOrder)                                       //route only open for authenticated user to create an order
+	router.GET("/getOrder", server.verifySession(nil), server.getSelfOrder)                                          //route only open for authenticated user to get there own orders
+	router.GET("/getOrderForAnyUser", server.verifySession(nil), server.checkAuthority(), server.getOrderForAnyUser) //route only open for admin to get orders of any user by there id
+	router.PATCH("/updateOrder", server.verifySession(nil), server.updateSelfOrder)                                  //route for authenticated user to update there order
+	router.DELETE("/deleteOrder", server.verifySession(nil), server.deleteSelfOrder)                                 //route for authenticated user to delete tehre order
 	server.router = router
 }
 

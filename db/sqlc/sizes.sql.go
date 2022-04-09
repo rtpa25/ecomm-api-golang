@@ -10,11 +10,10 @@ import (
 )
 
 const addSize = `-- name: AddSize :one
-INSERT INTO sizes (
-  name
-) VALUES (
-  $1
-) RETURNING id, name
+INSERT INTO
+  sizes (name)
+VALUES
+  ($1) RETURNING id, name
 `
 
 func (q *Queries) AddSize(ctx context.Context, name string) (Size, error) {
@@ -25,7 +24,10 @@ func (q *Queries) AddSize(ctx context.Context, name string) (Size, error) {
 }
 
 const deleteSize = `-- name: DeleteSize :exec
-DELETE FROM sizes WHERE id = $1
+DELETE FROM
+  sizes
+WHERE
+  id = $1
 `
 
 func (q *Queries) DeleteSize(ctx context.Context, id int32) error {
@@ -34,7 +36,10 @@ func (q *Queries) DeleteSize(ctx context.Context, id int32) error {
 }
 
 const listAllSizes = `-- name: ListAllSizes :many
-SELECT id, name FROM sizes
+SELECT
+  id, name
+FROM
+  sizes
 `
 
 func (q *Queries) ListAllSizes(ctx context.Context) ([]Size, error) {

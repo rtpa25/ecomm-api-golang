@@ -10,15 +10,16 @@ import (
 )
 
 const addProduct = `-- name: AddProduct :one
-INSERT INTO products (
-  name,
-  description,
-  image_url,
-  image_id,
-  price
-) VALUES (
-  $1, $2, $3, $4, $5
-) RETURNING id, name, description, created_at, updated_at, image_url, image_id, price
+INSERT INTO
+  products (
+    name,
+    description,
+    image_url,
+    image_id,
+    price
+  )
+VALUES
+  ($1, $2, $3, $4, $5) RETURNING id, name, description, created_at, updated_at, image_url, image_id, price
 `
 
 type AddProductParams struct {
@@ -52,7 +53,10 @@ func (q *Queries) AddProduct(ctx context.Context, arg AddProductParams) (Product
 }
 
 const deleteProduct = `-- name: DeleteProduct :exec
-DELETE FROM products WHERE id = $1
+DELETE FROM
+  products
+WHERE
+  id = $1
 `
 
 func (q *Queries) DeleteProduct(ctx context.Context, id int32) error {
@@ -61,8 +65,14 @@ func (q *Queries) DeleteProduct(ctx context.Context, id int32) error {
 }
 
 const getProduct = `-- name: GetProduct :one
-SELECT id, name, description, created_at, updated_at, image_url, image_id, price FROM products
-WHERE id = $1 LIMIT 1
+SELECT
+  id, name, description, created_at, updated_at, image_url, image_id, price
+FROM
+  products
+WHERE
+  id = $1
+LIMIT
+  1
 `
 
 func (q *Queries) GetProduct(ctx context.Context, id int32) (Product, error) {
@@ -82,10 +92,14 @@ func (q *Queries) GetProduct(ctx context.Context, id int32) (Product, error) {
 }
 
 const listProducts = `-- name: ListProducts :many
-SELECT id, name, description, created_at, updated_at, image_url, image_id, price FROM products
-ORDER BY id 
-LIMIT $1
-OFFSET $2
+SELECT
+  id, name, description, created_at, updated_at, image_url, image_id, price
+FROM
+  products
+ORDER BY
+  id
+LIMIT
+  $1 OFFSET $2
 `
 
 type ListProductsParams struct {
@@ -126,10 +140,16 @@ func (q *Queries) ListProducts(ctx context.Context, arg ListProductsParams) ([]P
 }
 
 const updateProduct = `-- name: UpdateProduct :one
-UPDATE products
-SET name = $2, description = $3, price = $4, image_url = $5, image_id = $6
-WHERE id = $1
-RETURNING id, name, description, created_at, updated_at, image_url, image_id, price
+UPDATE
+  products
+SET
+  name = $2,
+  description = $3,
+  price = $4,
+  image_url = $5,
+  image_id = $6
+WHERE
+  id = $1 RETURNING id, name, description, created_at, updated_at, image_url, image_id, price
 `
 
 type UpdateProductParams struct {

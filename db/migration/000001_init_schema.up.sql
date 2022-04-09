@@ -42,13 +42,14 @@ CREATE TABLE "size_product_map" (
 
 CREATE TABLE "orders" (
   "id" SERIAL PRIMARY KEY,
-  "amount" INT NOT NULL,
+  "quantity" INT NOT NULL,
   "user_id" INT NOT NULL,
-  "status" VARCHAR NOT NULL,
+  "status" INT NOT NULL DEFAULT 1,
   "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
   "updated_at" TIMESTAMP NOT NULL DEFAULT (now()),
   "address" VARCHAR NOT NULL,
-  "prodcut_id" INT NOT NULL
+  "prodcut_id" INT NOT NULL,
+  "selected_size" VARCHAR NOT NULL
 );
 
 CREATE TABLE "admins" (
@@ -56,16 +57,40 @@ CREATE TABLE "admins" (
   "user_id" INT NOT NULL
 );
 
-ALTER TABLE "category_product_map" ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id")  ON DELETE CASCADE;
-ALTER TABLE "category_product_map" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE CASCADE;
+ALTER TABLE
+  "category_product_map"
+ADD
+  FOREIGN KEY ("product_id") REFERENCES "products" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "size_product_map" ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id") ON DELETE CASCADE;
-ALTER TABLE "size_product_map" ADD FOREIGN KEY ("size_id") REFERENCES "sizes" ("id") ON DELETE CASCADE;
+ALTER TABLE
+  "category_product_map"
+ADD
+  FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "orders" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE;
-ALTER TABLE "orders" ADD FOREIGN KEY ("prodcut_id") REFERENCES "products" ("id") ON DELETE CASCADE;
+ALTER TABLE
+  "size_product_map"
+ADD
+  FOREIGN KEY ("product_id") REFERENCES "products" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "admins" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE;
+ALTER TABLE
+  "size_product_map"
+ADD
+  FOREIGN KEY ("size_id") REFERENCES "sizes" ("id") ON DELETE CASCADE;
+
+ALTER TABLE
+  "orders"
+ADD
+  FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE;
+
+ALTER TABLE
+  "orders"
+ADD
+  FOREIGN KEY ("prodcut_id") REFERENCES "products" ("id") ON DELETE CASCADE;
+
+ALTER TABLE
+  "admins"
+ADD
+  FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE;
 
 -- CREATE INDEX ON "prodcuts" ("price");
 -- CREATE INDEX ON "users" ("is_admin");

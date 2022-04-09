@@ -144,9 +144,6 @@ type listProductReponseParams struct {
 }
 
 func (server *Server) listProducts(ctx *gin.Context) {
-	// http://localhost:8080/listProducts?limit=8&offset=0&filters={"size":"M","catagories":"Modern"}&sort=newest
-	//first let's do sort
-
 	var res listProductReponseParams
 
 	val := ctx.Request.URL.Query()

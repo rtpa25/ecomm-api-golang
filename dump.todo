@@ -14,12 +14,25 @@
 [x] Add authorization middleware and secure all routes 
 [x] Start building the frontend [nextjs, reactQuery, styled components, if needed redux]
 [x] Setup supertokens with the frontend so that it can function well, make sure that the username field is getting rendered and the backend is paired up well
-[] Hook up the frontend with all product related routes with react query and set up the infra for further routes
-[] Add remaining routes for creating orders and stuff
-[] Check out the db transaction and look out for deadlock and race condition problems 
+[x] Hook up the frontend with all product related routes with react query and set up the infra for further routes
+[x] Add remaining routes for creating orders and stuff
+  ✔ First change the table to have sizes of the associated product @done (4/9/2022, 10:33:45 AM)
+  ✔ Change the SQL queries accordingly @done (4/9/2022, 10:33:47 AM)
+  ✔ CreateOrderEndPoint @done (4/9/2022, 11:17:12 AM)
+    ✔ the userId should be the person currently logged in @done (4/9/2022, 11:17:10 AM)
+  ✔ GetSelfOrders @done (4/9/2022, 11:17:24 AM)
+    ✔ the userId should be the person currently logged in @done (4/9/2022, 11:17:19 AM)
+    ✔ It should return not only the details of the order but also relevant details of the asscosiated product like the name, price, id, cataegory of the selected product @done (4/9/2022, 11:17:21 AM)
+  ✔ GetOrdersForAnyUser @done (4/9/2022, 11:17:26 AM)
+    ✔ Setup an admin check @done (4/9/2022, 11:17:28 AM)
+  ✔ UpdateSelfOrder @done (4/9/2022, 11:17:30 AM)
+    ✔ Should be the order of the person currently loggedin @done (4/9/2022, 11:17:31 AM)
+    ✔ This can be used to change the size of the product, increase or decrease the quantity of the product @done (4/9/2022, 11:17:33 AM)
+  ✔ DeleteSelfOrder @done (4/9/2022, 11:17:38 AM)
+    ✔ should be the order of the person authenticated @done (4/9/2022, 11:17:43 AM)
+[x] Check out the db transaction and look out for deadlock and race condition problems 
 [] Create a few indexes whereever needed and map in the optimization
 [] Once all the basic routes are completed and tested Dockerize the backend
-[] Deploy the backend onto Digital Ocean\
-[] Hook up the frontend with further created routes, cart and all. Then prepare it to deploy to vercel
-[] Configure github actions to do the job authommatically on every pr
+[] Deploy the backend onto Digital Ocean
+[] Setup a CI/CD pipeline for the backend application
  
