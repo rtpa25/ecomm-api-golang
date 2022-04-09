@@ -31,8 +31,11 @@
   ✔ DeleteSelfOrder @done (4/9/2022, 11:17:38 AM)
     ✔ should be the order of the person authenticated @done (4/9/2022, 11:17:43 AM)
 [x] Check out the db transaction and look out for deadlock and race condition problems 
+[] Do a bit of code refactor for the handler functions 
 [] Create a few indexes whereever needed and map in the optimization
-[] Once all the basic routes are completed and tested Dockerize the backend
-[] Deploy the backend onto Digital Ocean
+[] Dockerize the backend
 [] Setup a CI/CD pipeline for the backend application
+[] Deploy the backend onto Digital Ocean
+
+
  
