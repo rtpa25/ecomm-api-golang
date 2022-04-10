@@ -259,9 +259,6 @@ func (server *Server) listProducts(ctx *gin.Context) {
 }
 
 // ------------------ handler to get a specific product  ---------------------- //
-type getProductParams struct {
-	Id string `json:"id" binding:"required"`
-}
 
 type getProductReposneParams struct {
 	Product        db.Product `json:"product"`

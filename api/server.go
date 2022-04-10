@@ -66,6 +66,7 @@ func (server *Server) setupRouter() {
 	router.GET("/getOrderForAnyUser", server.verifySession(nil), server.checkAuthority(), server.getOrderForAnyUser) //route only open for admin to get orders of any user by there id
 	router.PATCH("/updateOrder", server.verifySession(nil), server.updateSelfOrder)                                  //route for authenticated user to update there order
 	router.DELETE("/deleteOrder", server.verifySession(nil), server.deleteSelfOrder)                                 //route for authenticated user to delete tehre order
+
 	server.router = router
 }
 

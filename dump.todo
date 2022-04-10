@@ -32,8 +32,10 @@
     ✔ should be the order of the person authenticated @done (4/9/2022, 11:17:43 AM)
 [x] Check out the db transaction and look out for deadlock and race condition problems 
 [x] Edit the listAllProducts endpoint to return just limited data that is required in that page that will remove the no. of db transactions in that operation making it faster
+[x] Add stripe payment intergration 
 [] Do a bit of code refactor for the handler functions 
-[] Create a few indexes whereever needed and map in the optimization
+[] Create a few indexes whereever needed and check the speed of execution on postman 
+[] Revise the deployment stratergy
 [] Dockerize the backend
 [] Setup a CI/CD pipeline for the backend application
 [] Deploy the backend onto Digital Ocean
