@@ -28,6 +28,7 @@ type Querier interface {
 	GetOrderById(ctx context.Context, id int32) (Order, error)
 	GetOrdersForUser(ctx context.Context, userID int32) ([]Order, error)
 	GetProduct(ctx context.Context, id int32) (Product, error)
+	GetSelfOrders(ctx context.Context, userID int32) ([]GetSelfOrdersRow, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	ListAllCategory(ctx context.Context) ([]Category, error)
 	ListAllSizes(ctx context.Context) ([]Size, error)

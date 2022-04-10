@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"time"
 )
 
 const addOrder = `-- name: AddOrder :one
@@ -15,18 +16,18 @@ INSERT INTO
     quantity,
     user_id,
     address,
-    prodcut_id,
+    product_id,
     selected_size
   )
 VALUES
-  ($1, $2, $3, $4, $5) RETURNING id, quantity, user_id, status, created_at, updated_at, address, prodcut_id, selected_size
+  ($1, $2, $3, $4, $5) RETURNING id, quantity, user_id, status, created_at, updated_at, address, product_id, selected_size
 `
 
 type AddOrderParams struct {
 	Quantity     int32  `json:"quantity"`
 	UserID       int32  `json:"user_id"`
 	Address      string `json:"address"`
-	ProdcutID    int32  `json:"prodcut_id"`
+	ProductID    int32  `json:"product_id"`
 	SelectedSize string `json:"selected_size"`
 }
 
@@ -35,7 +36,7 @@ func (q *Queries) AddOrder(ctx context.Context, arg AddOrderParams) (Order, erro
 		arg.Quantity,
 		arg.UserID,
 		arg.Address,
-		arg.ProdcutID,
+		arg.ProductID,
 		arg.SelectedSize,
 	)
 	var i Order
@@ -47,7 +48,7 @@ func (q *Queries) AddOrder(ctx context.Context, arg AddOrderParams) (Order, erro
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Address,
-		&i.ProdcutID,
+		&i.ProductID,
 		&i.SelectedSize,
 	)
 	return i, err
@@ -66,7 +67,7 @@ func (q *Queries) DeleteOrderById(ctx context.Context, id int32) error {
 }
 
 const getOrderById = `-- name: GetOrderById :one
-SELECT id, quantity, user_id, status, created_at, updated_at, address, prodcut_id, selected_size FROM orders
+SELECT id, quantity, user_id, status, created_at, updated_at, address, product_id, selected_size FROM orders
 WHERE id=$1
 `
 
@@ -81,7 +82,7 @@ func (q *Queries) GetOrderById(ctx context.Context, id int32) (Order, error) {
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Address,
-		&i.ProdcutID,
+		&i.ProductID,
 		&i.SelectedSize,
 	)
 	return i, err
@@ -89,7 +90,7 @@ func (q *Queries) GetOrderById(ctx context.Context, id int32) (Order, error) {
 
 const getOrdersForUser = `-- name: GetOrdersForUser :many
 SELECT
-  id, quantity, user_id, status, created_at, updated_at, address, prodcut_id, selected_size
+  id, quantity, user_id, status, created_at, updated_at, address, product_id, selected_size
 FROM
   orders
 WHERE
@@ -115,8 +116,77 @@ func (q *Queries) GetOrdersForUser(ctx context.Context, userID int32) ([]Order, 
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.Address,
-			&i.ProdcutID,
+			&i.ProductID,
 			&i.SelectedSize,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getSelfOrders = `-- name: GetSelfOrders :many
+SELECT orders.id, quantity, user_id, status, orders.created_at, orders.updated_at, address, product_id, selected_size, products.id, name, description, products.created_at, products.updated_at, image_url, image_id, price FROM orders
+JOIN products 
+ON products.id=orders.product_id 
+WHERE orders.user_id=$1
+ORDER BY orders.id
+`
+
+type GetSelfOrdersRow struct {
+	ID           int32     `json:"id"`
+	Quantity     int32     `json:"quantity"`
+	UserID       int32     `json:"user_id"`
+	Status       int32     `json:"status"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+	Address      string    `json:"address"`
+	ProductID    int32     `json:"product_id"`
+	SelectedSize string    `json:"selected_size"`
+	ID_2         int32     `json:"id_2"`
+	Name         string    `json:"name"`
+	Description  string    `json:"description"`
+	CreatedAt_2  time.Time `json:"created_at_2"`
+	UpdatedAt_2  time.Time `json:"updated_at_2"`
+	ImageUrl     string    `json:"image_url"`
+	ImageID      string    `json:"image_id"`
+	Price        string    `json:"price"`
+}
+
+func (q *Queries) GetSelfOrders(ctx context.Context, userID int32) ([]GetSelfOrdersRow, error) {
+	rows, err := q.db.QueryContext(ctx, getSelfOrders, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetSelfOrdersRow{}
+	for rows.Next() {
+		var i GetSelfOrdersRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Quantity,
+			&i.UserID,
+			&i.Status,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Address,
+			&i.ProductID,
+			&i.SelectedSize,
+			&i.ID_2,
+			&i.Name,
+			&i.Description,
+			&i.CreatedAt_2,
+			&i.UpdatedAt_2,
+			&i.ImageUrl,
+			&i.ImageID,
+			&i.Price,
 		); err != nil {
 			return nil, err
 		}
@@ -139,7 +209,7 @@ SET
   selected_size = $3,
   address = $4
 WHERE
-  id = $1 RETURNING id, quantity, user_id, status, created_at, updated_at, address, prodcut_id, selected_size
+  id = $1 RETURNING id, quantity, user_id, status, created_at, updated_at, address, product_id, selected_size
 `
 
 type UpdateOrderForUserParams struct {
@@ -165,7 +235,7 @@ func (q *Queries) UpdateOrderForUser(ctx context.Context, arg UpdateOrderForUser
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Address,
-		&i.ProdcutID,
+		&i.ProductID,
 		&i.SelectedSize,
 	)
 	return i, err

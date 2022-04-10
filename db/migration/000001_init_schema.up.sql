@@ -48,7 +48,7 @@ CREATE TABLE "orders" (
   "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
   "updated_at" TIMESTAMP NOT NULL DEFAULT (now()),
   "address" VARCHAR NOT NULL,
-  "prodcut_id" INT NOT NULL,
+  "product_id" INT NOT NULL,
   "selected_size" VARCHAR NOT NULL
 );
 
@@ -85,7 +85,7 @@ ADD
 ALTER TABLE
   "orders"
 ADD
-  FOREIGN KEY ("prodcut_id") REFERENCES "products" ("id") ON DELETE CASCADE;
+  FOREIGN KEY ("product_id") REFERENCES "products" ("id") ON DELETE CASCADE;
 
 ALTER TABLE
   "admins"

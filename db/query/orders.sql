@@ -4,7 +4,7 @@ INSERT INTO
     quantity,
     user_id,
     address,
-    prodcut_id,
+    product_id,
     selected_size
   )
 VALUES
@@ -19,6 +19,13 @@ WHERE
   user_id = $1
 ORDER BY
   id;
+
+-- name: GetSelfOrders :many
+SELECT * FROM orders
+JOIN products 
+ON products.id=orders.product_id 
+WHERE orders.user_id=$1
+ORDER BY orders.id;
 
 -- name: GetOrderById :one
 SELECT * FROM orders

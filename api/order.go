@@ -45,7 +45,7 @@ func (server *Server) createOrder(ctx *gin.Context) {
 		Quantity:     req.Quantity,
 		UserID:       userId,
 		Address:      req.Address,
-		ProdcutID:    req.ProdcutID,
+		ProductID:    req.ProdcutID,
 		SelectedSize: req.SelectedSize,
 	})
 
@@ -72,7 +72,7 @@ func (server *Server) getSelfOrder(ctx *gin.Context) {
 
 	userId := userFromSelfDB.ID
 
-	orders, err := server.store.GetOrdersForUser(ctx, userId)
+	orders, err := server.store.GetSelfOrders(ctx, userId)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -164,15 +164,9 @@ func (server *Server) updateSelfOrder(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, updatedOrder)
 }
 
-type deleteSelfOrderRequestParams struct {
-	OrderId int32 `json:"order_id"`
-}
-
 func (server *Server) deleteSelfOrder(ctx *gin.Context) {
-	var req deleteSelfOrderRequestParams
-
-	err := ctx.ShouldBindJSON(&req)
-
+	orderId := ctx.Request.URL.Query().Get("order_id")
+	intOrderId, err := strconv.Atoi(orderId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -192,7 +186,7 @@ func (server *Server) deleteSelfOrder(ctx *gin.Context) {
 
 	userId := userFromSelfDB.ID
 
-	order, err := server.store.GetOrderById(ctx, req.OrderId)
+	order, err := server.store.GetOrderById(ctx, int32(intOrderId))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -203,7 +197,7 @@ func (server *Server) deleteSelfOrder(ctx *gin.Context) {
 		return
 	}
 
-	err = server.store.DeleteOrderById(ctx, req.OrderId)
+	err = server.store.DeleteOrderById(ctx, int32(intOrderId))
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
