@@ -10,6 +10,7 @@ import (
 	"github.com/supertokens/supertokens-golang/recipe/session"
 )
 
+//handler to createOrder
 type createOrderRequestParams struct {
 	Quantity     int32  `json:"quantity"`
 	Address      string `json:"address"`
@@ -27,19 +28,11 @@ func (server *Server) createOrder(ctx *gin.Context) {
 		return
 	}
 
-	sess := session.GetSessionFromRequestContext(ctx.Request.Context())
-	user, err := emailpassword.GetUserByID(sess.GetUserID())
+	err, userId := getUserFromCurrentSession(server, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
-	userFromSelfDB, err := server.store.GetUserByEmail(ctx, user.Email)
-	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
-		return
-	}
-
-	userId := userFromSelfDB.ID
 
 	createdOrder, err := server.store.AddOrder(ctx, db.AddOrderParams{
 		Quantity:     req.Quantity,
@@ -58,19 +51,11 @@ func (server *Server) createOrder(ctx *gin.Context) {
 }
 
 func (server *Server) getSelfOrder(ctx *gin.Context) {
-	sess := session.GetSessionFromRequestContext(ctx.Request.Context())
-	user, err := emailpassword.GetUserByID(sess.GetUserID())
+	err, userId := getUserFromCurrentSession(server, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
-	userFromSelfDB, err := server.store.GetUserByEmail(ctx, user.Email)
-	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
-		return
-	}
-
-	userId := userFromSelfDB.ID
 
 	orders, err := server.store.GetSelfOrders(ctx, userId)
 
@@ -124,19 +109,11 @@ func (server *Server) updateSelfOrder(ctx *gin.Context) {
 		return
 	}
 
-	sess := session.GetSessionFromRequestContext(ctx.Request.Context())
-	user, err := emailpassword.GetUserByID(sess.GetUserID())
+	err, userId := getUserFromCurrentSession(server, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
-	userFromSelfDB, err := server.store.GetUserByEmail(ctx, user.Email)
-	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
-		return
-	}
-
-	userId := userFromSelfDB.ID
 
 	order, err := server.store.GetOrderById(ctx, req.ID)
 	if err != nil {
@@ -172,19 +149,11 @@ func (server *Server) deleteSelfOrder(ctx *gin.Context) {
 		return
 	}
 
-	sess := session.GetSessionFromRequestContext(ctx.Request.Context())
-	user, err := emailpassword.GetUserByID(sess.GetUserID())
+	err, userId := getUserFromCurrentSession(server, ctx)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
-	userFromSelfDB, err := server.store.GetUserByEmail(ctx, user.Email)
-	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
-		return
-	}
-
-	userId := userFromSelfDB.ID
 
 	order, err := server.store.GetOrderById(ctx, int32(intOrderId))
 	if err != nil {
@@ -207,4 +176,12 @@ func (server *Server) deleteSelfOrder(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, map[string]string{
 		"message": "order deleted successfully",
 	})
+}
+
+func getUserFromCurrentSession(server *Server, ctx *gin.Context) (error, int32) {
+	sess := session.GetSessionFromRequestContext(ctx.Request.Context())
+	user, err := emailpassword.GetUserByID(sess.GetUserID())
+	userFromSelfDB, err := server.store.GetUserByEmail(ctx, user.Email)
+	userId := userFromSelfDB.ID
+	return err, userId
 }

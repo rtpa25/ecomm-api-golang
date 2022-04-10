@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//handler to add a catergory to the server -- admin only
 type addCategoryParams struct {
 	Name string `json:"name" binding:"required"`
 }
@@ -32,6 +33,7 @@ func (server *Server) addCategory(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, category)
 }
 
+//handler to delete a catergory to the server -- admin only
 type deleteCategoryParams struct {
 	ID string `json:"id" binding:"required"`
 }
@@ -70,6 +72,7 @@ func (server *Server) deleteCategory(ctx *gin.Context) {
 	})
 }
 
+//handler to list all cateagories
 func (server *Server) listAllCategories(ctx *gin.Context) {
 	categories, err := server.store.ListAllCategory(ctx)
 
