@@ -34,8 +34,8 @@
 [x] Edit the listAllProducts endpoint to return just limited data that is required in that page that will remove the no. of db transactions in that operation making it faster
 [x] Add stripe payment intergration 
 [x] Do a bit of code refactor for the handler functions 
-[] Create a few indexes whereever needed and check the speed of execution on postman 
-[] Revise the deployment stratergy
+[x] Create a few indexes whereever needed and check the speed of execution on postman 
+[x] Revise the deployment stratergy
 [] Dockerize the backend
 [] Setup a CI/CD pipeline for the backend application
 [] Deploy the backend onto Digital Ocean

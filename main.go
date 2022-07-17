@@ -30,14 +30,19 @@ func main() {
 	}
 
 	store = db.NewStore(conn)
+	websiteBasePath := "/auth"
+	apiBasePath := "/auth"
 	err = supertokens.Init(supertokens.TypeInput{
 		Supertokens: &supertokens.ConnectionInfo{
-			ConnectionURI: "https://try.supertokens.io",
+			ConnectionURI: config.ConnectionUri,
+			APIKey:        config.ApiKey,
 		},
 		AppInfo: supertokens.AppInfo{
-			AppName:       "ecomm",
-			APIDomain:     config.ServerAddress,
-			WebsiteDomain: config.WebsiteAddress,
+			AppName:         "ecomm",
+			APIDomain:       config.ServerAddress,
+			WebsiteDomain:   config.WebsiteAddress,
+			WebsiteBasePath: &websiteBasePath,
+			APIBasePath:     &apiBasePath,
 		},
 		RecipeList: []supertokens.Recipe{
 			session.Init(nil),
