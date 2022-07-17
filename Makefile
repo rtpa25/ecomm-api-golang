@@ -8,10 +8,10 @@ dropdb:
 	docker exec -it ecomm-go dropdb ecomm
 
 migrateup:
-	migrate -path db/migration -database postgresql://root:secret@localhost:5430/ecomm?sslmode=disable -verbose up
+	migrate -path db/migration -database postgresql://postgres:bqm77Idyv6ugNMdmLLDX@containers-us-west-74.railway.app:6289/railway?sslmode=disable -verbose up
 
 migratedown:
-	migrate -path db/migration -database postgresql://root:secret@localhost:5430/ecomm?sslmode=disable -verbose down
+	migrate -path db/migration -database postgresql://postgres:bqm77Idyv6ugNMdmLLDX@containers-us-west-74.railway.app:6289/railway?sslmode=disable -verbose down
 
 pullSQLC:
 	docker pull kjconroy/sqlc
