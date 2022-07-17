@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"log"
 
 	_ "github.com/lib/pq" //the underscore triggers the lexer to not remove the import if not used
@@ -39,18 +38,12 @@ func main() {
 	var serverDomain string
 
 	if config.GoEnv == "production" {
-		fmt.Println("coming here in prod")
 		websiteDomain = config.WebsiteDomainProd
 		serverDomain = config.ServerDomainProd
 	} else {
-		fmt.Println("prod env var is the issyue maybe")
-		fmt.Println("config data", config.WebsiteDomainLocal)
 		websiteDomain = config.WebsiteDomainLocal
 		serverDomain = config.ServerDomainLocal
 	}
-	fmt.Println("GO_ENV var", config.GoEnv)
-	fmt.Println("website-domain variable", websiteDomain)
-	fmt.Println("server-domain variable", serverDomain)
 
 	err = supertokens.Init(supertokens.TypeInput{
 		Supertokens: &supertokens.ConnectionInfo{
