@@ -44,6 +44,7 @@ func main() {
 		serverDomain = config.ServerDomainProd
 	} else {
 		fmt.Println("prod env var is the issyue maybe")
+		fmt.Println("config data", config.WebsiteDomainLocal)
 		websiteDomain = config.WebsiteDomainLocal
 		serverDomain = config.ServerDomainLocal
 	}
