@@ -39,15 +39,17 @@ func main() {
 	var serverDomain string
 
 	if config.GoEnv == "production" {
+		fmt.Println("coming here in prod")
 		websiteDomain = config.WebsiteDomainProd
 		serverDomain = config.ServerDomainProd
 	} else {
+		fmt.Println("prod env var is the issyue maybe")
 		websiteDomain = config.WebsiteDomainLocal
 		serverDomain = config.ServerDomainLocal
 	}
-
-	fmt.Println(websiteDomain)
-	fmt.Println(serverDomain)
+	fmt.Println("GO_ENV var", config.GoEnv)
+	fmt.Println("website-domain variable", websiteDomain)
+	fmt.Println("server-domain variable", serverDomain)
 
 	err = supertokens.Init(supertokens.TypeInput{
 		Supertokens: &supertokens.ConnectionInfo{
