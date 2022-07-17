@@ -30,8 +30,21 @@ func main() {
 	}
 
 	store = db.NewStore(conn)
+
 	websiteBasePath := "/auth"
 	apiBasePath := "/auth"
+
+	var websiteDomain string
+	var serverDomain string
+
+	if config.GoEnv == "production" {
+		websiteDomain = config.WebsiteDomainProd
+		serverDomain = config.ServerDomainProd
+	} else {
+		websiteDomain = config.WebsiteDomainLocal
+		serverDomain = config.ServerDomainLocal
+	}
+
 	err = supertokens.Init(supertokens.TypeInput{
 		Supertokens: &supertokens.ConnectionInfo{
 			ConnectionURI: config.ConnectionUri,
@@ -39,8 +52,8 @@ func main() {
 		},
 		AppInfo: supertokens.AppInfo{
 			AppName:         "ecomm",
-			APIDomain:       config.ServerAddress,
-			WebsiteDomain:   config.WebsiteAddress,
+			APIDomain:       serverDomain,
+			WebsiteDomain:   websiteDomain,
 			WebsiteBasePath: &websiteBasePath,
 			APIBasePath:     &apiBasePath,
 		},

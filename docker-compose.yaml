@@ -3,6 +3,8 @@ services:
   nyka-server:
     container_name: nyka-server
     restart: unless-stopped
+    environment:
+      - GO_ENV=production
     build: 
       context: .
       dockerfile: Dockerfile
