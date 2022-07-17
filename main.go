@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
 
 	_ "github.com/lib/pq" //the underscore triggers the lexer to not remove the import if not used
@@ -44,6 +45,9 @@ func main() {
 		websiteDomain = config.WebsiteDomainLocal
 		serverDomain = config.ServerDomainLocal
 	}
+
+	fmt.Println(websiteDomain)
+	fmt.Println(serverDomain)
 
 	err = supertokens.Init(supertokens.TypeInput{
 		Supertokens: &supertokens.ConnectionInfo{
