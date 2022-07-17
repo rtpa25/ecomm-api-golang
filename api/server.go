@@ -30,7 +30,7 @@ func (server *Server) setupRouter() {
 
 	// CORS
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{"http://localhost:3000", "https://www.nyka.site"},
 		AllowMethods:     []string{"GET", "POST", "DELETE", "PUT", "OPTIONS", "PATCH"},
 		AllowHeaders:     append([]string{"content-type"}, supertokens.GetAllCORSHeaders()...),
 		MaxAge:           1 * time.Minute,
